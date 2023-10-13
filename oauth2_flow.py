@@ -34,9 +34,9 @@ _LOGGER = logging.getLogger(__name__)
 DATA_JWT_SECRET = "oauth2_jwt_secret"
 DATA_IMPLEMENTATIONS = "oauth2_impl"
 DATA_PROVIDERS = "oauth2_providers"
-AUTH_CALLBACK_PATH = "/auth/external/callback"
+AUTH_CALLBACK_PATH = "/auth/redirect"
 HEADER_FRONTEND_BASE = "HA-Frontend-Base"
-MY_AUTH_CALLBACK_PATH = "https://my.home-assistant.io/redirect/oauth"
+MY_AUTH_CALLBACK_PATH = "https://myaccount.frankenergy.co.nz/auth/redirect/"
 
 CLOCK_OUT_OF_SYNC_MAX_SEC = 20
 

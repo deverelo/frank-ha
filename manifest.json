@@ -1,10 +1,18 @@
 {
   "domain": "frank_ha",
   "name": "Frank HA",
-  "codeowners": [deverelo],
-  "dependencies": [],
+  "codeowners": [
+    "@deverelo"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "application_credentials"
+  ],
   "documentation": "https://github.com/deverelo/frank-ha",
-  "integration_type": "service",
+  "homekit": {},
   "iot_class": "cloud_polling",
-  "requirements": []
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": [],
+  "version": "0.0.1"
 }

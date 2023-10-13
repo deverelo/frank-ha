@@ -1,25 +1,45 @@
-"""Example of a custom component exposing a service."""
+"""The Frank HA integration."""
 from __future__ import annotations
 
-import logging
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers import aiohttp_client, config_entry_oauth2_flow
 
-from homeassistant.core import HomeAssistant, ServiceCall, callback
-from homeassistant.helpers.typing import ConfigType
+from . import api
+from .const import DOMAIN
 
-# The domain of your component. Should be equal to the name of your component.
-DOMAIN = "frank_ha"
-_LOGGER = logging.getLogger(__name__)
+# TODO List the platforms that you want to support.
+# For your initial PR, limit it to 1 platform.
+PLATFORMS: list[Platform] = [Platform.LIGHT]
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the an async service example component."""
-    @callback
-    def frank_ha(call: ServiceCall) -> None:
-        """My first service."""
-        _LOGGER.info('Received data', call.data)
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up Frank HA from a config entry."""
+    implementation = (
+        await config_entry_oauth2_flow.async_get_config_entry_implementation(
+            hass, entry
+        )
+    )
 
-    # Register our service with Home Assistant.
-    hass.services.async_register(DOMAIN, 'demo', frank_ha)
+    session = config_entry_oauth2_flow.OAuth2Session(hass, entry, implementation)
 
-    # Return boolean to indicate that initialization was successfully.
+    # If using a requests-based API lib
+    hass.data[DOMAIN][entry.entry_id] = api.ConfigEntryAuth(hass, session)
+
+    # If using an aiohttp-based API lib
+    hass.data[DOMAIN][entry.entry_id] = api.AsyncConfigEntryAuth(
+        aiohttp_client.async_get_clientsession(hass), session
+    )
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+
     return True
+
+
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    if unload_ok := await hass.config_entries.async_unload_platforms(entry, PLATFORMS):
+        hass.data[DOMAIN].pop(entry.entry_id)
+
+    return unload_ok
