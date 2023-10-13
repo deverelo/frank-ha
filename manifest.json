@@ -1,0 +1,10 @@
+{
+  "domain": "frank_ha",
+  "name": "Frank HA",
+  "codeowners": [deverelo],
+  "dependencies": [],
+  "documentation": "https://github.com/deverelo/frank-ha",
+  "integration_type": "service",
+  "iot_class": "cloud_polling",
+  "requirements": []
+}
